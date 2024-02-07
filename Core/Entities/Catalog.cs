@@ -12,6 +12,6 @@ namespace Core.Entities
 
         public virtual IList<Catalog>? ChildrenCatalogs { get; set;}
 
-        public virtual IList<Node>? ChildrenNodes { get; set; }
+        public virtual IList<Note>? ChildrenNodes { get; set; }
     }
 }

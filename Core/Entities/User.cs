@@ -6,6 +6,6 @@ namespace Core.Entities
     {
         public virtual IList<Catalog>? Catalogs { get; set; }
 
-        public virtual IList<Node>? Nodes { get; set; }
+        public virtual IList<Note>? Nodes { get; set; }
     }
 }
