@@ -13,8 +13,8 @@ namespace Infrastructure.EntityConfigurations
             builder.ToTable("Nodes");
 
             builder.Property(x => x.Name).IsRequired();
-            builder.HasOne(x => x.User).WithMany(x => x.Nodes);
-            builder.HasOne(x => x.Catalog).WithMany(x => x.ChildrenNodes);
+            builder.HasOne(x => x.User).WithMany(x => x.Notes);
+            builder.HasOne(x => x.Catalog).WithMany(x => x.ChildrenNotes);
         }
     }
 }

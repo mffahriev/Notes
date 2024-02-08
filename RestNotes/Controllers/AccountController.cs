@@ -2,7 +2,7 @@
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace RestNodes.Controllers
+namespace RestNotes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,8 +25,8 @@ namespace RestNodes.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Registration([FromBody] RegisterUserDTO dto)
         {
-            TokenDTO tokenDTO = await _registrationService.Registration(dto);
-            return Ok(tokenDTO);
+             await _registrationService.Registration(dto);
+            return Ok();
         }
 
         [HttpPost("login")]

@@ -2,14 +2,16 @@
 using FluentValidation;
 using Infrastructure.Validators;
 
-namespace RestNodes.DI
+namespace RestNotes.DI
 {
     public static class RegistratorValidators
     {
-        public static void AddValidators(this IServiceCollection services, IServiceProvider provider)
+        public static IServiceCollection AddValidators(this IServiceCollection services)
         {
             services.AddScoped<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
             services.AddScoped<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
+
+            return services;
         }
     }
 }

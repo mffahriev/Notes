@@ -27,7 +27,7 @@ namespace Infrastructure.Validators
                 .NotEmpty();
 
             RuleFor(x => x.ConfirmPassword)
-                .Null()
+                .NotNull()
                 .NotEmpty()
                 .Equal(x => x.Password);
 

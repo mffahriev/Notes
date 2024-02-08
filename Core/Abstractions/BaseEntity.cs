@@ -9,9 +9,9 @@
             Updated = default;
         }
 
-        public required Guid Id { get; set; }
+        public Guid Id { get; set; }
 
-        public required DateTimeOffset Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
         public DateTimeOffset? Updated { get; set; }
     }

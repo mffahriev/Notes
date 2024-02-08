@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace RestNodes.Controllers
+namespace RestNotes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class NodeController : ControllerBase
+    public class NoteController : ControllerBase
     {
-        public NodeController() 
+        public NoteController() 
         {
 
         }

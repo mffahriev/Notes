@@ -53,13 +53,13 @@ namespace Infrastructure.Migrations
                     b.ToTable("Catalogs");
                 });
 
-            modelBuilder.Entity("Core.Entities.Node", b =>
+            modelBuilder.Entity("Core.Entities.Note", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CatalogId")
+                    b.Property<Guid>("CatalogId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")
@@ -298,14 +298,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Entities.Node", b =>
+            modelBuilder.Entity("Core.Entities.Note", b =>
                 {
                     b.HasOne("Core.Entities.Catalog", "Catalog")
-                        .WithMany("ChildrenNodes")
-                        .HasForeignKey("CatalogId");
+                        .WithMany("ChildrenNotes")
+                        .HasForeignKey("CatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.Entities.User", "User")
-                        .WithMany("Nodes")
+                        .WithMany("Notes")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Catalog");
@@ -368,14 +370,14 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("ChildrenCatalogs");
 
-                    b.Navigation("ChildrenNodes");
+                    b.Navigation("ChildrenNotes");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
                 {
                     b.Navigation("Catalogs");
 
-                    b.Navigation("Nodes");
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RestNodes.DI;
-using RestNodes.Helpers;
-using RestNodes.Middlewars;
+using RestNotes.DI;
+using RestNotes.Helpers;
+using RestNotes.Middlewars;
 using System.Text;
 
 internal class Program
@@ -18,7 +18,6 @@ internal class Program
 
         builder.Services.AddControllers();
 
-        builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(option =>
         {
             option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -47,40 +46,48 @@ internal class Program
             });
         });
 
+        builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddDbContext<ApplicationContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options
+                .UseLazyLoadingProxies()
+                .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        );
 
         builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationContext>();
 
-        ServiceProvider provider = builder.Services.BuildServiceProvider();
-        IConfiguration Configuration = provider.GetRequiredService<IConfiguration>();
-
         builder.Services.AddAuthorization();
-        builder.Services.AddAuthentication(x => {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o => {
-            byte[] key = Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"] ?? throw new NullReferenceException());
-            o.SaveToken = true;
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(o => {
+            byte[] key = Encoding.UTF8.GetBytes(
+                builder.Configuration.GetValue<string>("JWT:SecretKey") ?? throw new NullReferenceException()
+            );
+            o.RequireHttpsMetadata = false;
             o.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = Configuration["JWT:Issuer"],
-                ValidAudience = Configuration["JWT:Audience"],
+                ValidIssuer = builder.Configuration.GetValue<string>("JWT:Issuer"),
+                ValidAudience = builder.Configuration.GetValue<string>("JWT:Audience"),
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ClockSkew = TimeSpan.Zero
             };
 
         });
 
+        builder.Services.AddValidators();
+        builder.Services.AddServices();
+        builder.Services.AddMappings();
 
-        builder.Services.AddValidators(provider);
-        builder.Services.AddServices(provider);
-
+        ServiceProvider provider = builder.Services.BuildServiceProvider();
         await provider.RegisterData();
 
         WebApplication app = builder.Build();
@@ -88,14 +95,14 @@ internal class Program
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        app.MapControllers();
-        app.UseRouting();
-
         app.UseMiddleware<ExceptionHandlerMiddleware>();
-        app.UseMiddleware<UnauthorizedUserHandlerMiddleware>();
 
-        app.UseAuthorization();
+        app.UseCors();
+        app.UseRouting();
         app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
         app.UseHttpsRedirection();
 
         app.Run();

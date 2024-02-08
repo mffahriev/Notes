@@ -4,8 +4,22 @@ namespace Core.Entities
 {
     public class User : IdentityUser
     {
-        public virtual IList<Catalog>? Catalogs { get; set; }
+        public User() 
+        {
+            Catalogs = new List<Catalog>();
+            Notes = new List<Note>();
+        }
 
-        public virtual IList<Note>? Nodes { get; set; }
+        public User(string name, string email, string basePath) 
+        {
+            UserName = name;
+            Email = email;
+            Catalogs = new List<Catalog> { new(basePath, this)};
+            Notes = new List<Note>();
+        }
+
+        public virtual IList<Catalog> Catalogs { get; set; }
+
+        public virtual IList<Note> Notes { get; set; }
     }
 }

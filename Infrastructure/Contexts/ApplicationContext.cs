@@ -12,11 +12,10 @@ namespace Infrastructure.Contexts
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {
-           
         }
 
         public DbSet<Catalog> Catalogs { get; set; }
 
-        public DbSet<Note> Nodes { get; set; }
+        public DbSet<Note> Notes { get; set; }
     }
 }

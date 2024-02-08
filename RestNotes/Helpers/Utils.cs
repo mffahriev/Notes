@@ -1,8 +1,10 @@
 ﻿using Core.Entities;
+using Core.Interfaces;
+using Core.Options;
 using Infrastructure.Helpers;
 using Microsoft.AspNetCore.Identity;
 
-namespace RestNodes.Helpers
+namespace RestNotes.Helpers
 {
     public static class Utils
     {
@@ -12,9 +14,11 @@ namespace RestNodes.Helpers
             {
                 UserManager<User> userManager = provider.GetRequiredService<UserManager<User>>();
                 RoleManager<IdentityRole> rolesManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+                IConfiguration configuration = provider.GetRequiredService<IConfiguration>();
+                IFactory<User, UserInitOptions> userFactory = provider.GetRequiredService<IFactory<User, UserInitOptions>>();
 
                 await Initializator.InitializeRoles(rolesManager);
-                await Initializator.InitializeAdmin(userManager);
+                await Initializator.InitializeAdmin(userManager, configuration, userFactory);
             }
             catch (Exception ex)
             {

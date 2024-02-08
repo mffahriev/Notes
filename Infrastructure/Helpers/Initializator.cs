@@ -1,5 +1,8 @@
 ﻿using Core.Entities;
+using Core.Interfaces;
+using Core.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Helpers
 {
@@ -7,8 +10,6 @@ namespace Infrastructure.Helpers
     {
         private const string _adminRole = "admin";
         private const string _userRole = "user";
-        private const string _adminEmail = "admin@admin.com";
-        private const string _adminPassword = "Aa123456!";
 
         public static async Task InitializeRoles(RoleManager<IdentityRole> roleManager)
         {
@@ -25,18 +26,26 @@ namespace Infrastructure.Helpers
         }
 
         public static async Task InitializeAdmin(
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            IConfiguration configuration,
+            IFactory<User, UserInitOptions> userFactory
         )
         {
-            if (await userManager.FindByNameAsync(_adminEmail) == null)
+            if (await userManager.FindByNameAsync(
+                configuration["AdminAccess:Email"] ?? throw new NullReferenceException()) == null
+            )
             {
-                User admin = new User 
-                { 
-                    Email = _adminEmail, 
-                    UserName = _adminEmail 
-                };
+                User admin = userFactory.Create(
+                    new UserInitOptions(
+                        configuration["AdminAccess:Name"] ?? throw new NullReferenceException(),
+                        configuration["AdminAccess:Email"] ?? throw new NullReferenceException()
+                    )
+                );
 
-                IdentityResult result = await userManager.CreateAsync(admin, _adminPassword);
+                IdentityResult result = await userManager.CreateAsync(
+                    admin, 
+                    configuration["AdminAccess:Password"] ?? throw new NullReferenceException()
+                );
 
                 if (result.Succeeded)
                 {

@@ -2,12 +2,12 @@
 {
     public interface IRepository<T>
     {
-        Task<T> Get(Guid Id);
+        Task<T> Get(Guid Id, CancellationToken token);
 
-        Task Insert(T entity);
+        Task Insert(T entity, CancellationToken token);
 
-        Task Delete(Guid Id);
+        Task Delete(Guid Id, CancellationToken token);
 
-        Task Update(T entity);
+        Task Update(T entity, CancellationToken token);
     }
 }

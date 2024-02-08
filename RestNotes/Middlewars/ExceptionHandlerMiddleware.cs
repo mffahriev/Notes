@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using Core.Exceptions;
+using System.Net;
+using System.Text.Json;
 
-namespace RestNodes.Middlewars
+namespace RestNotes.Middlewars
 {
     public class ExceptionHandlerMiddleware
     {
@@ -18,6 +20,12 @@ namespace RestNodes.Middlewars
             try
             {
                 await _next.Invoke(context);
+            }
+            catch (RegistrationException ex)
+            {
+                context.Response.Clear();
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new { message = ex.Message }));
             }
             catch (Exception ex) 
             {

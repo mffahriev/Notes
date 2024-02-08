@@ -4,6 +4,6 @@ namespace Core.Interfaces
 {
     public interface IRegistration
     {
-        public Task<TokenDTO> Registration(RegisterUserDTO dto);
+        public Task Registration(RegisterUserDTO dto);
     }
 }

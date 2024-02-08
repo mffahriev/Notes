@@ -190,7 +190,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true),
-                    CatalogId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CatalogId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
@@ -207,7 +207,8 @@ namespace Infrastructure.Migrations
                         name: "FK_Nodes_Catalogs_CatalogId",
                         column: x => x.CatalogId,
                         principalTable: "Catalogs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
