@@ -14,12 +14,12 @@ namespace Infrastructure.Services.CatalogServices
             _context = context;
         }
 
-        public async Task Delete(Guid Id, CancellationToken token)
+        public async Task Delete(Catalog entity, CancellationToken token)
         {
-            Catalog catalog = await Get(Id, token);
-
-            _context.Catalogs.Remove(catalog);
-            await _context.SaveChangesAsync(token);
+            await _context
+                .Catalogs
+                .Where(x => x.Id == entity.Id)
+                .ExecuteDeleteAsync(token);
         }
 
         public async Task<Catalog> Get(Guid Id, CancellationToken token)
@@ -37,9 +37,14 @@ namespace Infrastructure.Services.CatalogServices
 
         public async Task Update(Catalog entity, CancellationToken token)
         {
-            entity.Updated = DateTimeOffset.Now;
-            _context.Catalogs.Update(entity);
-            await _context.SaveChangesAsync(token);
+            await _context.Catalogs
+                .Where(x => x.Id == entity.Id)
+                .ExecuteUpdateAsync(
+                    setter => setter.SetProperty(x => x.ParentCatalog, entity.ParentCatalog)
+                                    .SetProperty(x => x.Name, entity.Name)
+                                    .SetProperty(x => x.Updated, DateTimeOffset.Now),
+                    token
+                );
         }
     }
 }

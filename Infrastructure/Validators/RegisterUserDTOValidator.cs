@@ -14,22 +14,32 @@ namespace Infrastructure.Validators
             _userManager = userManager;
 
             RuleFor(x => x.Email)
+                .MustAsync(CheckNotExistEmail)
+                .WithErrorCode("Пользователь с указанным email уже существует");
+
+            RuleFor(x => x.Email)
                 .NotNull()
                 .NotEmpty()
-                .MustAsync(CheckNotExistEmail);
+                .WithErrorCode("Поле Email не было введено");
 
             RuleFor(x => x.Password)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .WithErrorCode("Поле Password не было введено");
 
             RuleFor(x => x.Name)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .WithErrorCode("Поле Name не было введено");
 
             RuleFor(x => x.ConfirmPassword)
                 .NotNull()
                 .NotEmpty()
-                .Equal(x => x.Password);
+                .WithErrorCode("Поле ConfirmPassword не было введено");
+
+            RuleFor(x => x)
+                .Must(x => x.Password == x.ConfirmPassword)
+                .WithErrorCode("Пароли не совпадают");
 
         }
 

@@ -13,9 +13,19 @@ namespace Infrastructure.Validators
         {
             _userManager = userManager;
 
-            RuleFor(x => x.Email).NotNull().NotEmpty();
-            RuleFor(x => x.Password).NotEmpty().NotEmpty();
-            RuleFor(x => x).MustAsync(CheckPassword);
+            RuleFor(x => x.Email)
+                .NotNull()
+                .NotEmpty()
+                .WithErrorCode("Поле Email не было введено");
+
+            RuleFor(x => x.Password)
+                .NotNull()
+                .NotEmpty()
+                .WithErrorCode("Поле Password не было введено");
+
+            RuleFor(x => x)
+                .MustAsync(CheckPassword)
+                .WithErrorCode("Неправильно введён пароль");
 
         }
 

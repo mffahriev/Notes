@@ -2,10 +2,8 @@
 
 namespace Core.Interfaces
 {
-    public interface IManager<T>
+    public interface IPathManager<T>
     {
         Task<T> Get(string fullPath, string userId, CancellationToken cancellationToken);
-
-        Task<bool> IsExist(string fullPath, string userId, CancellationToken cancellationToken);
     }
 }

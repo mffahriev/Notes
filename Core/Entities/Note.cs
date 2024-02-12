@@ -28,6 +28,8 @@ namespace Core.Entities
 
         public string? Text { get; set; }
 
+        public DateTimeOffset? LastUpdateText { get; set; }
+
         public required virtual Catalog Catalog { get; set; }
 
         public required virtual User User { get; set; }

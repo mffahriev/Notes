@@ -4,7 +4,7 @@ using Core.Interfaces;
 using Core.Options;
 using FluentValidation;
 using Infrastructure.Services;
-using Infrastructure.Services.CatalogRepositories;
+using Infrastructure.Services.CatalogServices;
 using Infrastructure.Services.Factories;
 using Microsoft.AspNetCore.Identity;
 

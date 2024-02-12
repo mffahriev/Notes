@@ -11,4 +11,10 @@ namespace Core.DTOs
         DateTimeOffset Created, 
         DateTimeOffset? Updated
     );
+
+    public record CatalogItemDTO(string FullPath);
+
+    public record CatalogInsertDTO(string BasePath, string Name);
+
+    public record CatalogUpdateDTO(string SourceBasePath, string? TargetBasePath, string? NewName);
 }

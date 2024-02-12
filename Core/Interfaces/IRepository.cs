@@ -6,7 +6,7 @@
 
         Task Insert(T entity, CancellationToken token);
 
-        Task Delete(Guid Id, CancellationToken token);
+        Task Delete(T entity, CancellationToken token);
 
         Task Update(T entity, CancellationToken token);
     }

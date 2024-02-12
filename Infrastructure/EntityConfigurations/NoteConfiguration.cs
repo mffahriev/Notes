@@ -10,8 +10,8 @@ namespace Infrastructure.EntityConfigurations
         {
             base.Configure(builder);
 
-            builder.ToTable("Nodes");
-
+            builder.ToTable("Notes");
+            builder.HasIndex(x => new { x.User, x.Catalog, x.Name }).IsUnique();
             builder.Property(x => x.Name).IsRequired();
             builder.HasOne(x => x.User).WithMany(x => x.Notes);
             builder.HasOne(x => x.Catalog).WithMany(x => x.ChildrenNotes);
